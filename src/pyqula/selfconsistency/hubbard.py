@@ -124,7 +124,7 @@ def selective_U_matrix(Us,m):
   except: return Us*m # return
   if len(Us)!=len(m)//2: raise
   mout = m.copy()
-  fac = np.matrix(np.identity(len(Us)*2),dtype=np.complex)
+  fac = np.matrix(np.identity(len(Us)*2),dtype=np.complex128)
   for i in range(len(Us)):
     fac[2*i,2*i] = Us[i]
     fac[2*i+1,2*i+1] = Us[i]
@@ -189,10 +189,10 @@ def get_udxc(voccs,weight=None,totkp=1):
     vdup = correlatorsf90.correlators_weighted(voccs,weight,pdup)/totkp
     vddn = correlatorsf90.correlators_weighted(voccs,weight,pddn)/totkp
     vxc = correlatorsf90.correlators_weighted(voccs,pxc)/totkp
-  ndn = csc_matrix((vdup,pddn.transpose()),dtype=np.complex,shape=(ndim,ndim))
-  nup = csc_matrix((vddn,pdup.transpose()),dtype=np.complex,shape=(ndim,ndim))
+  ndn = csc_matrix((vdup,pddn.transpose()),dtype=np.complex128,shape=(ndim,ndim))
+  nup = csc_matrix((vddn,pdup.transpose()),dtype=np.complex128,shape=(ndim,ndim))
   xc = csc_matrix((np.conjugate(vxc),pxc.transpose()),
-                           dtype=np.complex,shape=(ndim,ndim))
+                           dtype=np.complex128,shape=(ndim,ndim))
   return (vdup,vddn,vxc,ndn,nup,xc) # return everything
 
 
