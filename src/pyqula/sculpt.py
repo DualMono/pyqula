@@ -1,4 +1,4 @@
-from __future__ import print_function
+
 from . import geometry
 from copy import deepcopy
 from . import algebra

@@ -1,4 +1,4 @@
-from __future__ import print_function
+
 from scipy.sparse import csc_matrix,bmat
 import numpy as np
 from .multihopping import MultiHopping

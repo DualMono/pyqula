@@ -1,5 +1,5 @@
-from __future__ import print_function
-from __future__ import division
+
+
 from .helptk import get_docstring
 from scipy.sparse import csc_matrix,bmat,csr_matrix
 import scipy.linalg as lg

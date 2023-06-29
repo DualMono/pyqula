@@ -1,5 +1,5 @@
 # routines to extract channels from a matrix
-from __future__ import division
+
 import numpy as np
 from . import algebra
 from .htk.matrixcomponent import spin_mixing_part

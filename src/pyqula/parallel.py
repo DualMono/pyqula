@@ -1,5 +1,5 @@
 # routines to call a function in parallel
-from __future__ import print_function
+
 import scipy.linalg as lg
 from . import algebra
 

@@ -1,5 +1,5 @@
 # routines to work with wannier hamiltonians
-from __future__ import print_function
+
 import numpy as np
 from . import hamiltonians
 from . import geometry

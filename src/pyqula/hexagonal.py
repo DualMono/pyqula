@@ -1,4 +1,4 @@
-from __future__ import print_function
+
 from copy import deepcopy
 from scipy.sparse import bmat
 from scipy.sparse import csc_matrix as csc

@@ -1,4 +1,4 @@
-from __future__ import print_function
+
 import scipy.sparse.linalg as lg
 from scipy.sparse import csc_matrix
 from scipy.sparse import coo_matrix,bmat

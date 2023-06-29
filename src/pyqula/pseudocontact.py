@@ -1,6 +1,6 @@
 # this library writes down the current that would be measured by placing
 # a constact in certain atoms, and putting other contact anywhere
-from __future__ import print_function
+
 from scipy.sparse import csc_matrix
 from . import correlator
 import numpy as np

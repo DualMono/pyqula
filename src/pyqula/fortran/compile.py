@@ -1,4 +1,4 @@
-from __future__ import print_function
+
 import os
 
 pairs = [] # pairs of folders, fortran file names and libraries

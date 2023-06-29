@@ -1,4 +1,4 @@
-from __future__ import print_function
+
 import scipy.linalg as lg
 import scipy.sparse.linalg as slg
 from scipy.sparse import csc_matrix,eye

@@ -1,4 +1,4 @@
-from __future__ import print_function
+
 
 def intra_super2d(h,n=1,central=None):
   """ Calculates the intra of a 2d system"""
