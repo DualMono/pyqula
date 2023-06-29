@@ -1,5 +1,5 @@
 # library with specific function for hybrid ribbons
-from __future__ import print_function
+
 import numpy as np
 
 

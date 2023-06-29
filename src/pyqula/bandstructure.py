@@ -1,7 +1,7 @@
 
 # special band structures
 
-from __future__ import print_function
+
 import scipy.linalg as lg
 from scipy.sparse import csc_matrix
 import scipy.sparse.linalg as slg
