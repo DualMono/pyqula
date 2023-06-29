@@ -1,5 +1,5 @@
 # kernel polynomial method libraries
-from __future__ import print_function,division
+
 import scipy.sparse.linalg as lg
 from scipy.sparse import csc_matrix as csc
 import numpy.random as rand

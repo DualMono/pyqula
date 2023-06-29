@@ -1,4 +1,4 @@
-from __future__ import print_function
+
 import scipy.linalg as lg
 import numpy as np
 

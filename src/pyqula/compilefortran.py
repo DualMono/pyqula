@@ -1,4 +1,4 @@
-from __future__ import print_function
+
 import os
 
 # names is a lists with pairs of name of folder, f90 file and .so file

@@ -1,4 +1,4 @@
-from __future__ import print_function
+
 from scipy.sparse import csc_matrix,bmat
 from .rotate_spin import sx,sy,sz
 import numpy as np

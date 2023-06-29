@@ -1,4 +1,4 @@
-from __future__ import print_function
+
 import numpy as np
 from scipy.sparse import coo_matrix, bmat, csc_matrix
 import scipy.sparse as sp
