@@ -128,7 +128,7 @@ def replicate3d_jit(rs,a1,a2,a3,n1,n2,n3,ro):
 
 
 #@jit(nopython=True)
-#@jit
+#@jit(nopython=True)
 def return_unique(rs1,rs2):
   """Return only those positions in rs1 that do not appear in rs2"""
   rout = []
