@@ -308,7 +308,7 @@ def guess(h,mode="ferro",fun=1e-1):
 from .algebra import braket_wAw
 #from numba import jit
 
-#@jit
+#@jit(nopython=True)
 def expectation_value(wfs,A,phis):
   """Return the expectation value of a set of wavevectors"""
   out = 0.0j
