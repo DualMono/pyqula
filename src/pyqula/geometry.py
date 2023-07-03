@@ -66,6 +66,7 @@ class Geometry:
     def __sub__(self,a):
         return self + (-1)*a
     def __radd__(self,g1):
+        from .geometrytk.galgebra import sum_geometries
         return sum_geometries(self,g1)
     def get_kmesh(self,**kwargs):
         """Return the k-mesh"""
@@ -247,7 +248,7 @@ class Geometry:
 
 
 
-def honeycomb_armchair_ribbon(ntetramers=10):
+def honeycomb_armchair_ribbon(ntetramers=10) -> Geometry:
   """ Creates the positions of an armchair ribbon
   of width ntetramers, return a geometry class """
   from numpy import array, sqrt
@@ -287,7 +288,7 @@ honeycomb_ribbon = honeycomb_armchair_ribbon # alias
 
 
 
-def square_ribbon(natoms):
+def square_ribbon(natoms) -> Geometry:
   """ Creates the hamiltonian of a square ribbon lattice"""
   from numpy import array
   x=array([0.0 for i in range(natoms)]) # create x coordinates
@@ -306,7 +307,7 @@ def square_ribbon(natoms):
 
 def ladder(): return square_ribbon(2)
 
-def bisquare_ribbon(ncells):
+def bisquare_ribbon(ncells) -> Geometry:
   g = square_lattice_bipartite()
   g = g.supercell((1,ncells))
   g.dimensionality = 1
@@ -314,7 +315,7 @@ def bisquare_ribbon(ncells):
 
 
 
-def chain(n=1):
+def chain(n=1) -> Geometry:
   """ Create a chain """
   g = square_ribbon(1) 
   g = g.get_supercell(n)
@@ -325,7 +326,7 @@ def chain(n=1):
 
 
 
-def bichain(n=1):
+def bichain(n=1) -> Geometry:
     """ Create a chain """
     g = square_ribbon(1) 
     g = g.get_supercell(2)
@@ -335,7 +336,7 @@ def bichain(n=1):
     return g
 
 
-def dimer():
+def dimer() -> Geometry:
     """Geomtry of a dimer"""
     g = bichain()
     g.dimensionality = 0
@@ -344,7 +345,7 @@ def dimer():
 
 
 
-def square_tetramer_ribbon(ntetramers):
+def square_tetramer_ribbon(ntetramers: int) -> Geometry:
     """ Creates the hamiltonian of a square tetramer ribbon lattice"""
     from numpy import array
     natoms = ntetramers*4
@@ -380,7 +381,7 @@ def square_tetramer_ribbon(ntetramers):
 
 
 
-def square_zigzag_ribbon(npairs):
+def square_zigzag_ribbon(npairs: int) -> Geometry:
   """ Creates the hamiltonian of a square zigzag (11) lattice"""
   from numpy import array,sqrt
   s2 = sqrt(2.) # square root of 2
@@ -403,7 +404,7 @@ def square_zigzag_ribbon(npairs):
 
 
 
-def honeycomb_zigzag_ribbon(ntetramers=10):
+def honeycomb_zigzag_ribbon(ntetramers=10) -> Geometry:
   from numpy import array, sqrt
   n = ntetramers
   x=array([0.0 for i in range(4*n)])
@@ -437,7 +438,7 @@ def honeycomb_zigzag_ribbon(ntetramers=10):
 
 
 
-def honeycomb_lattice_zigzag():
+def honeycomb_lattice_zigzag() -> Geometry:
   """ Return a honeyomb lattice with 4 atoms per unit cell"""
   from numpy import array, sqrt
   x=array([0.0 for i in range(4)])
@@ -468,7 +469,7 @@ def honeycomb_lattice_zigzag():
   g.center()
   return g
 
-def honeycomb_lattice_armchair():
+def honeycomb_lattice_armchair() -> Geometry:
     g = honeycomb_lattice_zigzag()
     g.a1,g.a2 = g.a2,-g.a1 # switch axis
     from . import sculpt
@@ -476,7 +477,7 @@ def honeycomb_lattice_armchair():
     return g
 
 
-def supercell1d(g,nsuper):
+def supercell1d(g: Geometry, nsuper: int) -> Geometry:
   """
   Creates a supercell of the system
   """
@@ -521,7 +522,7 @@ def supercell1d(g,nsuper):
 ########### begin 2d geometries ################
 ################################################
 
-def honeycomb_lattice(n=1):
+def honeycomb_lattice(n=1) -> Geometry:
   """
   Create a honeycomb lattice
   """
@@ -542,8 +543,9 @@ def honeycomb_lattice(n=1):
           same_length=True) 
   return g
 
+hexagonal_lattice = honeycomb_lattice # alias
 
-def buckled_honeycomb_lattice(n=1):
+def buckled_honeycomb_lattice(n=1) -> Geometry:
   """
   Return a buckled honeycomb lattice
   """
@@ -554,7 +556,7 @@ def buckled_honeycomb_lattice(n=1):
 
 
 
-def triangular_lattice(n=1):
+def triangular_lattice(n=1) -> Geometry:
   """
   Creates a triangular lattice
   """
@@ -576,7 +578,7 @@ def triangular_lattice(n=1):
 
 
 
-def triangular_lattice_tripartite():
+def triangular_lattice_tripartite() -> Geometry:
   """
   Creates a triangular lattice with three sites per unit cell
   """
@@ -586,7 +588,7 @@ def triangular_lattice_tripartite():
 
 
 
-def triangular_lattice_pentapartite():
+def triangular_lattice_pentapartite() -> Geometry:
   """
   Creates a triangular lattice with five sites per unit cell
   """
@@ -597,7 +599,7 @@ def triangular_lattice_pentapartite():
 
 
 
-def triangular_ribbon(n):
+def triangular_ribbon(n) -> Geometry:
   g = triangular_lattice() # create geometry
   go = g.copy() # copy geometry
   r0 = [] # empty list
@@ -623,7 +625,7 @@ def triangular_ribbon(n):
 
 
 
-def square_lattice_bipartite():
+def square_lattice_bipartite() -> Geometry:
   """
   Creates a square lattice
   """
@@ -642,7 +644,7 @@ def square_lattice_bipartite():
 
 
 
-def square_lattice():
+def square_lattice() -> Geometry:
   """
   Creates a square lattice
   """
@@ -663,7 +665,7 @@ single_square_lattice = square_lattice # alias
 
 
 
-def cubic_lattice():
+def cubic_lattice() -> Geometry:
   """
   Creates a cubic lattice
   """
@@ -684,7 +686,7 @@ def cubic_lattice():
 cubic_lattice_minimal = cubic_lattice
 
 
-def cubic_lattice_bipartite():
+def cubic_lattice_bipartite() -> Geometry:
   """
   Creates a cubic lattice
   """
@@ -711,7 +713,7 @@ def cubic_lattice_bipartite():
   return g
 
 
-def cubic_lieb_lattice():
+def cubic_lieb_lattice() -> Geometry:
   """
   Return a 3d Lieb lattice
   """
@@ -720,7 +722,7 @@ def cubic_lieb_lattice():
   return g
 
 
-def lieb_lattice():
+def lieb_lattice() -> Geometry:
   """
   Create a 2d Lieb lattice
   """
@@ -739,7 +741,7 @@ def lieb_lattice():
 
 
 
-def kagome_lattice(n=1):
+def kagome_lattice(n=1) -> Geometry:
   """
   Creates a Kagome lattice
   """
@@ -763,7 +765,7 @@ def kagome_lattice(n=1):
   return g
 
 
-def rectangular_kagome_lattice():
+def rectangular_kagome_lattice() -> Geometry:
   """
   Creates a square kagome lattice
   """
@@ -779,7 +781,7 @@ def rectangular_kagome_lattice():
 
 
 
-def honeycomb_lattice_square_cell():
+def honeycomb_lattice_square_cell() -> Geometry:
   """
   Creates a honeycomb lattice
   """
@@ -789,7 +791,7 @@ def honeycomb_lattice_square_cell():
 
 
 
-def honeycomb_lattice_C6():
+def honeycomb_lattice_C6() -> Geometry:
   """
   Geometry for a honeycomb lattice, taking a unit cell
   with C6 rotational symmetry
@@ -804,7 +806,7 @@ def honeycomb_lattice_C6():
 
 
 
-def kagome_ribbon(n=5):
+def kagome_ribbon(n=5) -> Geometry:
   """Create a Kagome ribbon"""
   g = rectangular_kagome_lattice() # 2d geometry
   from . import ribbonizate
@@ -820,7 +822,7 @@ from .supercell import supercell3d
 
 
 
-def read(input_file="POSITIONS.OUT"):
+def read(input_file="POSITIONS.OUT") -> Geometry:
   """ Reads a geometry """
   m = np.genfromtxt(input_file).transpose()
   g = Geometry() # cretae geometry
@@ -871,7 +873,7 @@ def get_reciprocal2d(a1,a2):
   return (b1,b2)
 
 
-def apilate(g,drs=[np.array([0.,0.,0.])]):
+def apilate(g,drs=[np.array([0.,0.,0.])]) -> Geometry:
   """ generate a geometry by appilating another geometry, displacements
   are given on input """
   nl = len(drs) # number of layers
@@ -890,7 +892,7 @@ from .geometrytk.write import write_positions
 write_geometry = write_positions
 
 
-def remove_duplicated(g):
+def remove_duplicated(g: Geometry) -> Geometry:
   """ Remove duplicated atoms"""
   if not g.atoms_have_names: raise
   go = g.copy() # copy geometry
@@ -940,7 +942,7 @@ from .geometrytk.fractional import fractional2real
 
 
 
-def get_diameter(g):
+def get_diameter(g: Geometry) -> float:
   """Get the maximum distance between atoms"""
   from scipy.spatial import distance
   r = np.array(g.r) # positions
@@ -997,7 +999,7 @@ def periodic_zrotation(g,v=np.array([0.,0.])):
 
 
 
-def cubic_diamond_lattice():
+def cubic_diamond_lattice() -> Geometry:
   """Return a diamond lattice"""
   fcc = [] # fcc vectors
   fcc += [np.array([0.,0.,0.])]
@@ -1021,7 +1023,7 @@ def cubic_diamond_lattice():
 
 
 
-def diamond_lattice_minimal():
+def diamond_lattice_minimal() -> Geometry:
   """Return a diamond lattice"""
   fcc = [] # fcc vectors
   fcc += [np.array([0.,0.,0.])]
@@ -1044,7 +1046,7 @@ def diamond_lattice_minimal():
 
 
 
-def pyrochlore_lattice():
+def pyrochlore_lattice() -> Geometry:
   """Return a pyrochlore lattice"""
   rs = [np.array([0.,0.,0.])]
   rs += [np.array([-.25,.25,0.])]
@@ -1069,7 +1071,7 @@ def pyrochlore_lattice():
 
 
 
-def tetrahedral_lattice():
+def tetrahedral_lattice() -> Geometry:
   """Return a single layer of the pyrochlore lattice"""
   g = pyrochlore_lattice()
   from . import films
@@ -1147,7 +1149,7 @@ def same_site(r1,r2):
 
 
 
-def hyperhoneycomb_lattice():
+def hyperhoneycomb_lattice() -> Geometry:
   """Return a hyperhoneycomb lattice"""
   g = Geometry() # create geometry
   g.a1 = np.array([np.sqrt(3.),0.,0.]) # lattice vector
@@ -1253,7 +1255,7 @@ gdict["diamond"] = diamond_lattice
 gdict["cubic"] = cubic_lattice
 
 
-def get_geometry(g):
+def get_geometry(g: Geometry | str | None) -> Geometry:
     """Return a certain geometry"""
     if type(g)==Geometry: return g
     elif type(g)==str:

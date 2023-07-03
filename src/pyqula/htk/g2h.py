@@ -1,10 +1,13 @@
 import numpy as np
 
 from .. import specialhopping
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+   from ..hamiltonians import Hamiltonian
 
 def get_hamiltonian(self,tij=None,has_spin=True,
                         is_sparse=False,spinful_generator=False,nc=2,
-                        is_multicell=False,mgenerator=None,**kwargs):
+                        is_multicell=False,mgenerator=None,**kwargs) -> "Hamiltonian":
     """ Create the hamiltonian for this geometry. By default, it assumes
     first neighbor hopping
         - has_spin = True, whether if to include spin degree of freedom
