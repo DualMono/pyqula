@@ -2,8 +2,14 @@ import numpy as np
 from . import supercell
 from . import sculpt
 
+from typing import TYPE_CHECKING, TypeVar
+if TYPE_CHECKING:
+    from .geometry import Geometry
+    from .hamiltonians import Hamiltonian
+T = TypeVar('T', "Geometry", "Hamiltonian")
 
-def bulk2ribbon(obj,**kwargs):
+
+def bulk2ribbon(obj: T,**kwargs) -> T:
     from .geometry import Geometry
     from .hamiltonians import Hamiltonian
     if type(obj)==Geometry:
@@ -13,8 +19,7 @@ def bulk2ribbon(obj,**kwargs):
     else: raise
 
 
-
-def geometry_bulk2ribbon(g,n=10,boundary=[1,0],clean=True):
+def geometry_bulk2ribbon(g,n=10,boundary=[1,0],clean=True) -> "Geometry":
   """Return the geometry of a ribbon"""
   go = g.copy() # copy
   m = [[boundary[0],boundary[1],0],[0,1,0],[0,0,1]] # supercell
@@ -41,7 +46,7 @@ def geometry_bulk2ribbon(g,n=10,boundary=[1,0],clean=True):
 
 
 
-def hamiltonian_ribbon(hin,n=10):
+def hamiltonian_ribbon(hin,n=10) -> "Hamiltonian":
   """Return the Hamiltonian of a film"""
   h = hin.copy() # copy Hamiltonian
   from . import multicell
