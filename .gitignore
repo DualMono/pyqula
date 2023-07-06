@@ -8,7 +8,6 @@
 *.pkl
 __pycache__/
 *.npz
-*.in
 *.xyz
 docs/
 *.egg-info
@@ -17,3 +16,5 @@ dist/
 MULTI*
 *.TXT
 .ipynb_checkpoints
+.idea
+build

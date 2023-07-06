@@ -1,5 +1,5 @@
 import numpy as np
-
+from numba import jit
 
 
 def bloch_phase(self,d,k):
@@ -24,4 +24,12 @@ def bloch_phase(self,d,k):
     else: raise
 
 
-
+@jit(nopython=True)
+def bloch_phase_2d(d: np.ndarray, k: np.ndarray) -> np.complex128:
+    """
+    Return the Bloch phase for this d vector. Numba compiled 2D version
+    """
+    dot_prod = 0
+    for i in range(2):
+        dot_prod += d[i] * k[i]
+    return np.exp(1j * dot_prod * np.pi * 2)

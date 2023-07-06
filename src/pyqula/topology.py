@@ -167,7 +167,7 @@ def hall_conductivity(h,dk=-1,n=1000):
 
 
 def mesh_chern(h,dk=-1,nk=10,delta=0.0001,mode="Wilson",
-        operator=None,kmesh=None):
+        operator=None,kmesh=None, write=False):
   """ Calculates the chern number of a 2d system """
   c = 0.0
   ks = [] # array for kpoints
@@ -192,12 +192,13 @@ def mesh_chern(h,dk=-1,nk=10,delta=0.0001,mode="Wilson",
   ik = 0
   bs = parallel.pcall(fberry,ks) # compute all the Berry curvatures
   # write in file
-  fo = open("BERRY_CURVATURE.OUT","w") # open file
-  for (k,b) in zip(ks,bs):
-    fo.write(str(k[0])+"   ")
-    fo.write(str(k[1])+"   ")
-    fo.write(str(b)+"\n")
-  fo.close() # close file
+  if write:
+      fo = open("BERRY_CURVATURE.OUT","w") # open file
+      for (k,b) in zip(ks,bs):
+        fo.write(str(k[0])+"   ")
+        fo.write(str(k[1])+"   ")
+        fo.write(str(b)+"\n")
+      fo.close() # close file
   ################
   c = np.sum(bs) # sum berry curvatures
   if kmesh is None: # no kmesh provided
@@ -205,7 +206,8 @@ def mesh_chern(h,dk=-1,nk=10,delta=0.0001,mode="Wilson",
   else: # kmesh is given
       den = klist.infer_kmesh_density(kmesh,d=2) # infer the volume
       c = den*c/(2.*np.pi) # normalize
-  open("CHERN.OUT","w").write(str(c)+"\n")
+  if write:
+    open("CHERN.OUT","w").write(str(c)+"\n")
   return c
 
 
