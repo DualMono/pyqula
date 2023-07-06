@@ -18,3 +18,5 @@ MULTI*
 *.TXT
 .ipynb_checkpoints
 .mpsfolder
+.idea
+build

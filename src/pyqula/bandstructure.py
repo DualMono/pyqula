@@ -7,7 +7,7 @@ from scipy.sparse import csc_matrix
 import scipy.sparse.linalg as slg
 from scipy.sparse import issparse
 import numpy as np
-from . import timing
+from itertools import chain
 from . import klist
 from . import topology
 from . import operators
@@ -72,8 +72,7 @@ def ket_Aw(A,w):
 def get_bands_nd(h,kpath=None,operator=None,num_bands=None,
                     callback=None,central_energy=0.0,nk=400,
                     ewindow=None,
-                    output_file="BANDS.OUT",write=True,
-                    silent=True):
+                    output_file="BANDS.OUT", write=False):
   """
   Get an n-dimensional bandstructure
   """
@@ -98,18 +97,20 @@ def get_bands_nd(h,kpath=None,operator=None,num_bands=None,
   # open file and get generator
   hkgen = h.get_hk_gen() # generator hamiltonian
   kpath = h.geometry.get_kpath(kpath,nk=nk) # generate kpath
+
   def getek(k):
     """Compute this k-point"""
-    out = "" # output string
+    out = []
     hk = hkgen(kpath[k]) # get hamiltonian
     if operator is None:
       es = diagf(hk)
       es = np.sort(es) # sort energies
       for e in es:  # loop over energies
-        out += str(k)+"   "+str(e)+"\n" # write in file
-      if callback is not None: callback(k,es) # call the function
+        out.append([k, e])
+      if callback is not None:
+        callback(k,es) # call the function
     else:
-      es,ws = diagf(hk)
+      es, ws = diagf(hk)
       ws = ws.transpose() # transpose eigenvectors
       def evaluate(w,k,A): # evaluate the operator
           if type(A)==operators.Operator:
@@ -125,35 +126,28 @@ def get_bands_nd(h,kpath=None,operator=None,num_bands=None,
         if callable(ewindow):
             if not ewindow(e): continue # skip iteration
         if isinstance(operator, (list,)): # input is a list
-            waws = [evaluate(w,k,A) for A in operator]
-        else: waws = [evaluate(w,k,operator)]
-        out += str(k)+"   "+str(e)+"  " # write in file
-        for waw in waws:  out += str(waw)+"  " # write in file
-        out += "\n" # next line
+            waws = [evaluate(w, k, A) for A in operator]
+        else:
+            waws = [evaluate(w, k, operator)]
+        out.append([k, e] + waws)
       # callback function in each iteration
-      if callback is not None: callback(k,es,ws) # call the function
-    return out # return string
+      if callback is not None:
+        callback(k,es,ws) # call the function
+    return out  # return list
   ### Now evaluate the function
+
   from . import parallel
-  if write: f = open(output_file,"w") # open bands file
   if parallel.cores==1: ### single thread ###
-    tr = timing.Testimator("BANDSTRUCTURE",silent=silent) # generate object
-    esk = "" # empty list
-    for k in range(len(kpath)): # loop over kpoints
-      tr.remaining(k,len(kpath)) # estimate of the time
-      ek = getek(k)
-      esk += ek # store
-      if write: f.write(ek) # write this kpoint
-      if write: f.flush() # flush in file
+    esk = list(chain.from_iterable([getek(k) for k in range(len(kpath))]))
   else: # parallel run
-      esk = parallel.pcall(getek,range(len(kpath))) # compute all
-      esk = "".join(esk) # concatenate all
-      if write: f.write(esk)
-  if write: f.close()
-#  print("\nBANDS finished")
-  esk = esk.split("\n") # split
-  del esk[-1] # remove last one
-  esk = np.array([[float(i) for i in ek.split()] for ek in esk]).T
+    esk = list(chain.from_iterable(parallel.pcall(getek, range(len(kpath)))))  # compute all
+
+  del esk[-1]  # remove last one
+  if write:
+    with open(output_file, "w") as f:
+      f.write("\n".join(esk))
+
+  esk = np.array(esk).T
   return esk # return data
 
 
@@ -175,7 +169,7 @@ def lowest_bands(h,nkpoints=100,nbands=10,operator = None,
   Returns the lowest eigenvaleus of the system
   """
   from scipy.sparse import csc_matrix
-  if kpath is None: 
+  if kpath is None:
     k = klist.default(h.geometry) # default path
   else: k = kpath
   import gc # garbage collector
@@ -192,7 +186,7 @@ def lowest_bands(h,nkpoints=100,nbands=10,operator = None,
           if discard(v): continue
         fo.write(str(iw)+"     "+str(eig[i])+"\n")
         iw += 1 # increase counter
-    elif h.dimensionality>0: 
+    elif h.dimensionality>0:
       hkgen = h.get_hk_gen() # get generator
       for ik in k:  # ribbon
         hk = hkgen(ik) # get hamiltonians
@@ -227,5 +221,5 @@ def get_bands_map(h,n=0,**kwargs):
         e = algebra.eigvalsh(hk(k))[n]
         return e
     from .spectrum import reciprocal_map
-    return reciprocal_map(h,f,filename="BANDS_2D.OUT",**kwargs) 
+    return reciprocal_map(h,f,filename="BANDS_2D.OUT",**kwargs)
 

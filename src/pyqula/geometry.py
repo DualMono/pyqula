@@ -12,6 +12,7 @@ import scipy.linalg as lg
 from numba import jit
 from .htk.g2h import get_hamiltonian
 from .helptk import get_docstring
+from .geometrytk.bloch import bloch_phase, bloch_phase_2d
 
 
 try:
@@ -198,8 +199,10 @@ class Geometry:
         from .geometrytk.replicas import multireplicas
         return multireplicas(self,n)
     def bloch_phase(self,d,k):
-        from .geometrytk.bloch import bloch_phase
-        return bloch_phase(self,d,k)
+        if self.dimensionality == 2:
+            return bloch_phase_2d(d, k)
+        else:
+            return bloch_phase(self,d,k)
     def remove(self,i=0):
         """
         Remove one site
