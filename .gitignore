@@ -18,3 +18,4 @@ MULTI*
 .ipynb_checkpoints
 .idea
 build
+*.pstat
