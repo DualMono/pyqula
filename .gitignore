@@ -20,3 +20,4 @@ MULTI*
 .mpsfolder
 .idea
 build
+*.pstat
