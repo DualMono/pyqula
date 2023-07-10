@@ -190,7 +190,7 @@ def mesh_chern(h,dk=-1,nk=10,delta=0.0001,mode="Wilson",
       ks = klist.kmesh(h.dimensionality,nk=nk) # get the mesh
   else: ks = kmesh # use the provided kmesh
   ik = 0
-  bs = parallel.pcall(fberry,ks) # compute all the Berry curvatures
+  bs = [fberry(k) for k in ks]  # compute all the Berry curvatures
   # write in file
   if write:
       fo = open("BERRY_CURVATURE.OUT","w") # open file

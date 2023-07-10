@@ -1,10 +1,14 @@
 from pyqula import geometry
 import numpy as np
 import timeit
+import cProfile
 
-# parallelization
-# from pyqula import parallel
-# parallel.set_cores("max")  # uncomment to use all the cores
+enable_profiler = False
+
+if enable_profiler:
+    pr = cProfile.Profile()
+    pr.disable()
+
 
 g = geometry.triangular_lattice()  # get the geometry
 h = g.get_hamiltonian()  # get the Hamiltonian
@@ -19,7 +23,13 @@ h.get_dos(delta=1e-1, energies=np.linspace(-3.5, 3.5, 100), write=False, nk=50)
 # chern_time = timeit.timeit(lambda: h.get_chern(), number=100) / 100
 # print(f"{chern_time=}")
 
+if enable_profiler:
+    pr.enable()
 dos_time = timeit.timeit(lambda:
                          h.get_dos(delta=1e-1, energies=np.linspace(-3.5, 3.5, 100), write=False, nk=50),
-                         number=10) / 10
+                         number=10)
+if enable_profiler:
+    pr.disable()
+    pr.dump_stats('profile.pstat')
+
 print(f"{dos_time=}")
