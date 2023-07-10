@@ -1,6 +1,12 @@
 import numpy as np
+from numba import jit
 from scipy.sparse import csc_matrix,bmat,coo_matrix
+
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from pyqula.hamiltonians import Hamiltonian
 from . import parallel
+from .geometrytk.bloch import bloch_phase_2d
 
 
 def collect_hopping(h):
@@ -93,46 +99,58 @@ def generate_get_tij(h):
             else: return None
     return fun
 
-def hk_gen(h):
-  """Generate a k dependent hamiltonian"""
-  if not h.is_multicell:
-      h = h.get_multicell()
-  # get the non zero hoppings
-  hopping = [] # empty list
-  for t in h.hopping: # loop
-    if h.is_sparse:
-      if np.sum(np.abs(coo_matrix(t.m).data))>1e-7: hopping.append(t) # store this hopping
+
+def hk_gen(h: "Hamiltonian"):
+    """Generate a k dependent hamiltonian"""
+    if not h.is_multicell:
+        h = h.get_multicell()
+    # get the non zero hoppings
+    hopping = []  # empty list
+    for t in h.hopping:  # loop
+        if h.is_sparse:
+            if np.sum(np.abs(coo_matrix(t.m).data)) > 1e-7:
+                hopping.append(t)  # store this hopping
+        else:
+            if np.sum(np.abs(t.m)) > 1e-7:
+                hopping.append(t)  # store this hopping
+    t_m = np.array([h.m for h in hopping])
+    t_dir = np.array([h.dir for h in hopping])
+    intra: np.matrix = h.intra
+    if h.dimensionality == 0:
+        return lambda k: h.intra
+    elif h.dimensionality == 1:  # one dimensional
+        def hk(k):
+            """k dependent hamiltonian, k goes from 0 to 1"""
+            mout = h.intra.copy()  # intracell term
+            for t in hopping:  # loop over matrices
+                tk = t.m * h.geometry.bloch_phase(t.dir, k)  # k hopping
+                mout = mout + tk
+            return mout
+
+        return hk  # return the function
+    elif h.dimensionality == 2:  # two dimensional
+        @jit(nopython=True, fastmath=True, cache=True)
+        def hk(k: np.ndarray):
+            """k dependent hamiltonian, k goes from 0 to 1"""
+            mout = intra.copy()  # intracell term
+            for i in range(len(t_m)):
+                tk = t_m[i] * bloch_phase_2d(t_dir[i], k)
+                mout = mout + tk
+            return mout
+
+        return hk  # return the function
+    elif h.dimensionality == 3:  # three-dimensional
+        def hk(k):
+            """k dependent hamiltonian, k goes from 0 to 1"""
+            mout = h.intra.copy()  # intracell term
+            for t in h.hopping:  # loop over matrices
+                tk = t.m * h.geometry.bloch_phase(t.dir, k)  # k hopping
+                mout = mout + tk
+            return mout
+
+        return hk  # return the function
     else:
-      if np.sum(np.abs(t.m))>1e-7: hopping.append(t) # store this hopping
-  if h.dimensionality == 0: return lambda k: h.intra
-  elif h.dimensionality == 1: # one dimensional
-    def hk(k):
-      """k dependent hamiltonian, k goes from 0 to 1"""
-      mout = h.intra.copy() # intracell term
-      for t in hopping: # loop over matrices
-        tk = t.m * h.geometry.bloch_phase(t.dir,k) # k hopping
-        mout = mout + tk 
-      return mout
-    return hk  # return the function
-  elif h.dimensionality == 2: # two dimensional
-    def hk(k):
-      """k dependent hamiltonian, k goes from 0 to 1"""
-      mout = h.intra.copy() # intracell term
-      for t in hopping: # loop over matrices
-        tk = t.m * h.geometry.bloch_phase(t.dir,k) # k hopping
-        mout = mout + tk 
-      return mout
-    return hk  # return the function
-  elif h.dimensionality == 3: # three dimensional
-    def hk(k):
-      """k dependent hamiltonian, k goes from 0 to 1"""
-      mout = h.intra.copy() # intracell term
-      for t in h.hopping: # loop over matrices
-        tk = t.m * h.geometry.bloch_phase(t.dir,k) # k hopping
-        mout = mout + tk 
-      return mout
-    return hk  # return the function
-  else: raise
+        raise ValueError("Dimension must be in {1, 2, 3}")
 
 
 

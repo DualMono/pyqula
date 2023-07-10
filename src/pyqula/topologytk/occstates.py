@@ -2,6 +2,9 @@ import numpy as np
 from .. import algebra
 import scipy.sparse.linalg as slg
 from scipy.sparse import csc_matrix
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from ..hamiltonians import Hamiltonian
 
 
 arpack_tol = algebra.arpack_tol
@@ -42,10 +45,10 @@ def positive_wf(es,wfs):
 
 
 
-def occ_states_generator(h,k,**kwargs):
+def occ_states_generator(h: "Hamiltonian", k, **kwargs):
     """Return a function that generates the occupied wavefunctions"""
     if not h.os_gen:
-        hk_gen = h.get_hk_gen() # get hamiltonian generator
+        hk_gen = h.get_hk_gen(reload=False) # get hamiltonian generator
         return lambda k: occupied_states(hk_gen,k,**kwargs)
     else: return h.os_gen
 

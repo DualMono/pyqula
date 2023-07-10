@@ -146,19 +146,19 @@ class Hamiltonian():
       self.has_hopping_dict = False # has hopping dictonary
       self.non_hermitian = False # non hermitian Hamiltonian
       self.os_gen = None # occupied states generator, for topology
+      self.__hk_gen = None
       if not geometry is None:
   # dimensionality of the system
         self.dimensionality = geometry.dimensionality 
         self.geometry = geometry # add geometry object
         self.num_orbitals = len(geometry.x)
-    def get_hk_gen(self):
+    def get_hk_gen(self, reload=True):
         """ Generate kdependent hamiltonian"""
-        #if self.is_multicell:
-        out = multicell.hk_gen(self) # for multicell
-       # else: out = hk_gen(self) # for normal cells
-        from .htk.canonicalphase import canonical_unitary
-#        return canonical_unitary(self,out)
-        return out
+        if reload or self.__hk_gen is None:  # reload or initialize the function
+            # TODO: force recalculation if the hamiltonian changes
+            out = multicell.hk_gen(self)
+            self.__hk_gen = out
+        return self.__hk_gen
 
     def has_time_reversal_symmetry(self):
         """Check if a Hamiltonian has time reversal symmetry"""
