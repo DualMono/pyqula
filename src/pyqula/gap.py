@@ -141,7 +141,7 @@ def optimize_energy(h,robust=True,mode="full",**kwargs):
         h = h.copy() # make a new copy
         h.turn_sparse() # sparse Hamiltonian
     from scipy.optimize import minimize
-    hk_gen = h.get_hk_gen() # generator
+    hk_gen = h.get_hk_gen(reload=False) # generator
     def gete(k): # return the energies
       hk = hk_gen(k) # Hamiltonian 
       if h.is_sparse: 
