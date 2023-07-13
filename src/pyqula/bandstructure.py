@@ -95,7 +95,7 @@ def get_bands_nd(h,kpath=None,operator=None,num_bands=None,
       if operator is None: return eig
       else: return (eig,eigvec)
   # open file and get generator
-  hkgen = h.get_hk_gen() # generator hamiltonian
+  hkgen = h.get_hk_gen(reload=False) # generator hamiltonian
   kpath = h.geometry.get_kpath(kpath,nk=nk) # generate kpath
 
   def getek(k):

@@ -315,6 +315,7 @@ class Hamiltonian():
         self.turn_spinful()
         from .magnetism import add_zeeman
         add_zeeman(self,zeeman=zeeman)
+        self.get_hk_gen()
     def add_magnetism(self,m):
         """Adds magnetism, new version of zeeman"""
         self.turn_spinful()
@@ -344,6 +345,7 @@ class Hamiltonian():
     def add_onsite(self,fermi):
       """ Move the Fermi energy of the system"""
       shift_fermi(self,fermi)
+      self.get_hk_gen()
     def get_topological_invariant(self,**kwargs):
         """Return a topological invariant"""
         if self.dimensionality==0: pass

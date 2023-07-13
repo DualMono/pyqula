@@ -153,9 +153,18 @@ def todouble_jit(vs,ind,vout,nv,dim):
 
 
 accelerate = False 
+use_np = True
+
+
+@jit(nopython=True)
+def eigh_np(m: np.ndarray):
+    return np.linalg.eigh(m)
+
 
 def eigh(m):
     """Wrapper for linalg"""
+    if use_np:
+        return eigh_np(m)
     m = todense(m)
     if np.max(np.abs(m.imag))<error: m = m.real # real matrix
     if not accelerate: return dlg.eigh(m)
@@ -186,7 +195,14 @@ def eigh(m):
       else: return dlg.eigh(m) # diagonalize complex matrix
 
 
+@jit(nopython=True)
+def eigvalsh_np(m: np.ndarray):
+    return np.linalg.eigvalsh(m)
+
+
 def eigvalsh(m):
+    if use_np:
+        return eigvalsh_np(m)
     """Wrapper for linalg"""
     m = todense(m) # turn the matrix dense
     if np.max(np.abs(m.imag))<error: m = m.real # real matrix

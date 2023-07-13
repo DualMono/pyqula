@@ -176,14 +176,14 @@ def optimize_energy(h,robust=True,mode="full",**kwargs):
       return -np.max(es) # bottom
     def opte(f):
       """Optimize the eigenvalues"""
-      from scipy.optimize import differential_evolution
+      from scipy.optimize import differential_evolution, shgo
       from scipy.optimize import minimize
       if h.dimensionality==0:
           return f([0.,0.,0.]) # return
       else:
           bounds = [(0.,1.) for i in range(h.dimensionality)]
       if robust: # use a robust optimization
-          res = differential_evolution(f,bounds=bounds,**kwargs)
+          res = shgo(f,bounds=bounds,**kwargs)
       else: # conventional optimization
           x0 = np.random.random(h.dimensionality) # inital vector
           res = minimize(f,x0,method="Powell",bounds=bounds,**kwargs)
