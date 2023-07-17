@@ -56,7 +56,7 @@ def write_berry(h,kpath=None,dk=0.01,window=None,max_waves=None,nk=600,
 
 
 
-def berry_phase(h,nk=20,kpath=None,write=True):
+def berry_phase(h, nk=20, kpath=None, write=False):
     """ Calculates the Berry phase of a Hamiltonian"""
     if h.dimensionality==0: raise
     elif h.dimensionality == 1:
