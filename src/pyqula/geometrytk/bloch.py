@@ -1,27 +1,34 @@
 import numpy as np
 from numba import jit
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from ..hamiltonians import Hamiltonian
 
 
-def bloch_phase(self,d,k):
+def bloch_phase(h: "Hamiltonian", d, k):
     """
     Return the Bloch phase for this d vector
     """
-    if self.dimensionality == 0: return 1.0
-    elif self.dimensionality == 1:
-      try: kp = k[0] # extract the first component
-      except: kp = k # ups, assume that it is a float
-      dt = np.array(d)[0]
-      kt = np.array([kp])[0]
-      return np.exp(1j*dt*kt*np.pi*2.)
-    elif self.dimensionality == 2:
-      dt = np.array(d)[0:2]
-      kt = np.array(k)[0:2]
-      return np.exp(1j*dt.dot(kt)*np.pi*2.)
-    elif self.dimensionality == 3:
-      dt = np.array(d)[0:3]
-      kt = np.array(k)[0:3]
-      return np.exp(1j*dt.dot(kt)*np.pi*2.)
-    else: raise
+    if h.dimensionality == 0:
+        return 1.0
+    elif h.dimensionality == 1:
+        if isinstance(k, (float, int)):
+            kp = k
+        else:
+            kp = k[0]  # extract the first component
+        dt = np.array(d)[0]
+        kt = np.array([kp])[0]
+        return np.exp(1j * dt * kt * np.pi * 2.)
+    elif h.dimensionality == 2:
+        dt = np.array(d)[0:2]
+        kt = np.array(k)[0:2]
+        return np.exp(1j * dt.dot(kt) * np.pi * 2.)
+    elif h.dimensionality == 3:
+        dt = np.array(d)[0:3]
+        kt = np.array(k)[0:3]
+        return np.exp(1j * dt.dot(kt) * np.pi * 2.)
+    else:
+        raise ValueError(f"Dimension should be in {{0, 1, 2, 3}} but was {h.dimensionality}")
 
 
 @jit(nopython=True, fastmath=True)
