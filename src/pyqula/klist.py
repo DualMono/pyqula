@@ -42,9 +42,6 @@ def get_klist(g,ns,nk=100):
         for ik in dk:
             ks.append(k0 + ik*kn) # new vector
     ks.append(kv[len(ns)-1]) # last one
-    fbl = open("BANDLINES.OUT","w")
-    for i in range(len(ns)): 
-        fbl.write(str(kinds[i])+" "+ns[i]+"\n")
     return ks # return vector
 
 
@@ -83,29 +80,11 @@ def default_kpath(g,nk=400):
 #    print("Path along",bm)
 #    b2 = np.array([.5,np.sqrt(3)/2])
 #    b2 = np.array([0.,-1.])
-    fk = open("KPOINTS_BANDS.OUT","w")  
-#    fk.write(str(nk)+"\n") # number of kpoints
     k = np.array([0.,0.,0.]) # old kpoint
     kout= []
     for i in range(nk):
-      k += bm /(nk) # move kpoint 
-      fk.write(str(k[0])+"   "+str(k[1])+"\n    ")
+      k += bm /(nk) # move kpoint
       kout.append(k.copy()) # store in array
-    fk.close()
-    # write bandlines
-    fbl = open("BANDLINES.OUT","w")
-    if np.abs(g.a1.dot(g.a2))<0.001: # square lattice
-      fbl.write("0   \Gamma\n")
-      fbl.write(str(nk/2)+"   M\n")
-      fbl.write(str(nk)+"   \Gamma\n")
-
-    else: # triangular lattice
-      fbl.write("0   \Gamma\n")
-      fbl.write(str(nk/3)+"   K\n")
-      fbl.write(str(nk/2)+"   M\n")
-      fbl.write(str(2*nk/3)+"   K'\n")
-      fbl.write(str(nk)+"   \Gamma\n")
-    fbl.close()
     return kout
 
 
@@ -142,7 +121,7 @@ def write_klist(kl,output_file="klist.in"):
   fk.close()
 
 
-def custom_klist(kp = None,nk=100,write=True,scale=True):
+def custom_klist(kp = None,nk=100,write=False,scale=True):
   if kp==None:
     kp = [[0.,0.,0.],[.5,.0,0.],[.5,.5,0.],[.0,.0,0.]]  # define points
   kp = [np.array(k) for k in kp] # convert to arrays
@@ -168,21 +147,12 @@ def kx(g,nk=400):
   if g.dimensionality == 2:
     b1 = np.array([1.,0.])
     b2 = np.array([0.,1.])
-    fk = open("klist.in","w")  
-    fk.write(str(nk)+"\n") # number of kpoints
     k = -b1/2 # old kpoint
     kout= []
     for i in range(nk):
-      k += (b1) /(nk) # move kpoint 
-      fk.write(str(k[0])+"   "+str(k[1])+"\n    ")
+      k += (b1) /(nk) # move kpoint
       kout.append(k.copy()) # store in array
-    fk.close()
     # write bandlines
-    fbl = open("BANDLINES.OUT","w")
-    fbl.write("0   X_1\n")
-    fbl.write(str(nk/2)+"   \Gamma\n")
-    fbl.write(str(nk)+"   X_1\n")
-    fbl.close()
   return kout # return klist
 
 
