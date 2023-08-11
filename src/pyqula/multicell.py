@@ -129,7 +129,6 @@ def hk_gen(h: "Hamiltonian"):
 
         return hk  # return the function
     elif h.dimensionality == 2:  # two dimensional
-        @jit(nopython=True, fastmath=True)
         def hk(k: np.ndarray):
             """k dependent hamiltonian, k goes from 0 to 1"""
             mout = intra.copy()  # intracell term
