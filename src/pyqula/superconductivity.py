@@ -170,14 +170,14 @@ projh = csc_matrix([[0.,0.,0.,0.],[0.,0.,0.,0.],[0.,0.,1.,0.],[0.,0.,0.,1.]])
 deltauu = csc_matrix([[0.,0.,0.,0.],[0.,0.,0.,0.],[0.,0.,0.,0.],[-1.,0.,0.,0.]])
 # and the rest are simple
 deltadd = csc_matrix([[0.,0.,0.,0.],[0.,0.,0.,0.],[0.,1.,0.,0.],[0.,0.,0.,0.]])
-deltauu = deltauu.H
-deltadd = deltadd.H
+deltauu = deltauu.getH()
+deltadd = deltadd.getH()
 deltax = (deltadd - deltauu)/2.
 deltay = (deltadd + deltauu)/2j
 # this one is tricky, we only want the antisymmetric part
 deltaz = csc_matrix([[0.,0.,0.,0.],[0.,0.,0.,0.],[1.,0.,0.,0.],[0.,-1.,0.,0.]])/2.
 
-deltaz = deltaz.H
+deltaz = deltaz.getH()
 
 
 
@@ -305,7 +305,7 @@ def add_pairing(deltas=[[0.,0],[0.,0.]],is_sparse=True,r1=[],r2=[]):
     # Nambu spinor!!!!!!!!!!!!!!!!!
     # c_up d_dn d^\dagger_dn -d^\dagger_up
     D = csc_matrix([[dud,duu],[ddd,ddu]]) # SC matrix
-#    D = bmat([[None,D],[-D.H,None]]) # the minus sign comes from triplet
+#    D = bmat([[None,D],[-D.getH(),None]]) # the minus sign comes from triplet
     return D
   # superconducting coupling
   n = len(r1)  # number of sites
@@ -351,7 +351,7 @@ def add_pairing_to_hamiltonian(self,**kwargs):
     self.turn_nambu() # add electron hole terms
     r = self.geometry.r # positions 
     m = add_pairing(df,r1=r,r2=r) # intra cell
-    self.intra = self.intra + m + m.H
+    self.intra = self.intra + m + m.getH()
     if self.dimensionality>0:
       if not self.is_multicell: # for multicell hamiltonians
         self.turn_multicell()
@@ -368,7 +368,7 @@ def add_pairing_to_hamiltonian(self,**kwargs):
         if np.max(np.abs(m))>0.0001: # non zero
             self.hopping.append(Hopping(d=d,m=m)) # add pairing
         if np.max(np.abs(m2))>0.0001: # non zero
-            self.hopping.append(Hopping(d=-np.array(d),m=m2.H)) # add pairing
+            self.hopping.append(Hopping(d=-np.array(d),m=m2.getH())) # add pairing
       from .multicell import collect_hopping
       self.hopping = collect_hopping(self)
 
